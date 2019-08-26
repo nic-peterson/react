@@ -7,31 +7,58 @@ import {
   CardHeader
 } from "reactstrap";
 import { Link } from "react-router-dom";
+import { Loading } from "./LoadingComponent";
+import { baseUrl } from "../shared/baseUrl";
+import { FadeTransform, Fade, Stagger } from "react-animation-components";
 
 function RenderLeader({ leaders }) {
-  if (leaders != null) {
+  if (leaders.isLoading) {
+    return (
+      <div className="container">
+        <div className="row">
+          <Loading />
+        </div>
+      </div>
+    );
+  } else if (leaders.errMess) {
+    return (
+      <div className="container">
+        <div className="row">
+          <h4>{leaders.errMess}</h4>
+        </div>
+      </div>
+    );
+  } else if (leaders.leaders != null) {
     return (
       <div className="container">
         <div className="row">
           <ul class="list-unstyled">
-            {leaders.map(leader => {
-              return (
-                <li className="media" li key={leader.id}>
-                  <img className="mr-3" src={leader.image} alt={leader.name} />
-                  <div className="media-body">
-                    <h5 className="mt-0 mb-1">{leader.name}</h5>
-                    <h4 className="mt-0 mb-1">{leader.designation}</h4>
-                    <p>{leader.description}</p>
-                  </div>
-                </li>
-              );
-            })}
+            <Stagger in>
+              {leaders.leaders.map(leader => {
+                return (
+                  <Fade in>
+                    <li className="media" li key={leader.id}>
+                      <img
+                        className="mr-3"
+                        src={baseUrl + leader.image}
+                        alt={leader.name}
+                      />
+                      <div className="media-body">
+                        <h5 className="mt-0 mb-1">{leader.name}</h5>
+                        <h4 className="mt-0 mb-1">{leader.designation}</h4>
+                        <p>{leader.description}</p>
+                      </div>
+                    </li>
+                  </Fade>
+                );
+              })}
+            </Stagger>
           </ul>
         </div>
       </div>
     );
   } else {
-    return <div>NULL</div>;
+    return <div />;
   }
 }
 
